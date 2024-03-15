@@ -7,7 +7,7 @@
 ### Defined types
 
 * [`puppet_authorization`](#puppet_authorization): Define type to manage the puppetserver authorization
-* [`puppet_authorization::rule`](#puppet_authorization--rule)
+* [`puppet_authorization::rule`](#puppet_authorization--rule): manage a puppetserver authorization rule
 
 ### Resource types
 
@@ -60,20 +60,18 @@ Default value: `false`
 
 Data type: `Stdlib::Absolutepath`
 
-The path to the file
+The path to the auth.conf file
 
 Default value: `$name`
 
 ### <a name="puppet_authorization--rule"></a>`puppet_authorization::rule`
 
-The puppet_authorization::rule class.
+manage a puppetserver authorization rule
 
 #### Parameters
 
 The following parameters are available in the `puppet_authorization::rule` defined type:
 
-* [`match_request_path`](#-puppet_authorization--rule--match_request_path)
-* [`match_request_type`](#-puppet_authorization--rule--match_request_type)
 * [`path`](#-puppet_authorization--rule--path)
 * [`ensure`](#-puppet_authorization--rule--ensure)
 * [`rule_name`](#-puppet_authorization--rule--rule_name)
@@ -83,34 +81,20 @@ The following parameters are available in the `puppet_authorization::rule` defin
 * [`match_request_method`](#-puppet_authorization--rule--match_request_method)
 * [`match_request_query_params`](#-puppet_authorization--rule--match_request_query_params)
 * [`sort_order`](#-puppet_authorization--rule--sort_order)
-
-##### <a name="-puppet_authorization--rule--match_request_path"></a>`match_request_path`
-
-Data type: `Optional[String]`
-
-
-
-Default value: `undef`
-
-##### <a name="-puppet_authorization--rule--match_request_type"></a>`match_request_type`
-
-Data type: `Optional[Enum['path', 'regex']]`
-
-
-
-Default value: `undef`
+* [`match_request_path`](#-puppet_authorization--rule--match_request_path)
+* [`match_request_type`](#-puppet_authorization--rule--match_request_type)
 
 ##### <a name="-puppet_authorization--rule--path"></a>`path`
 
 Data type: `Stdlib::Absolutepath`
 
-
+The path to the auth.conf file
 
 ##### <a name="-puppet_authorization--rule--ensure"></a>`ensure`
 
 Data type: `Enum['present', 'absent']`
 
-
+State of rule
 
 Default value: `'present'`
 
@@ -118,7 +102,7 @@ Default value: `'present'`
 
 Data type: `String`
 
-
+An arbitrary name used to identity the rule
 
 Default value: `$name`
 
@@ -126,7 +110,7 @@ Default value: `$name`
 
 Data type: `Variant[Array[Variant[String, Hash]], String, Hash, Undef]`
 
-
+Value(s) to permit an authenticated request
 
 Default value: `undef`
 
@@ -134,7 +118,8 @@ Default value: `undef`
 
 Data type: `Boolean`
 
-
+Puppet Server will always permit the request (potentially insecure) when set to true.
+If true, the rule cannot use the allow or deny parameters.
 
 Default value: `false`
 
@@ -142,7 +127,7 @@ Default value: `false`
 
 Data type: `Variant[Array[Variant[String, Hash]], String, Hash, Undef]`
 
-
+Value(s) to deny an authenticated request, even if an allow is also matched.
 
 Default value: `undef`
 
@@ -150,7 +135,7 @@ Default value: `undef`
 
 Data type: `Variant[Array[Puppet_authorization::Httpmethod], Puppet_authorization::Httpmethod, Undef]`
 
-
+Limit rule to match specific HTTP request method(s).
 
 Default value: `undef`
 
@@ -158,7 +143,8 @@ Default value: `undef`
 
 Data type: `Hash`
 
-
+Limit rule to matching query parameters with specific value(s).
+An Array of values can be provided to match a request with any of the values.
 
 Default value: `{}`
 
@@ -166,9 +152,26 @@ Default value: `{}`
 
 Data type: `Integer`
 
-
+Rule processing priority, 1 to 399 are evaluated before default Puppet rules, or 601 to 998 are be evaluated after Puppet.
+Lower-numbered values evaluated first, and secondarily sorts lexicographically by the name string value's Unicode code points.
 
 Default value: `200`
+
+##### <a name="-puppet_authorization--rule--match_request_path"></a>`match_request_path`
+
+Data type: `Optional[String]`
+
+Match request when the endpoint URL starts with or contains the parameter value.
+
+Default value: `undef`
+
+##### <a name="-puppet_authorization--rule--match_request_type"></a>`match_request_type`
+
+Data type: `Optional[Enum['path', 'regex']]`
+
+How Puppet Server will interpret the match_request_path parameter value.
+
+Default value: `undef`
 
 ## Resource types
 
